@@ -2,7 +2,7 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'nyc_analytics'
+name: 'nyc_analytics_acreary'
 version: '1.0.0'
 config-version: 2
 # Some default settings for dbt
@@ -22,7 +22,7 @@ clean-targets:
 
 # Set up models, which are basically SQL files, to create tables
 models:
- nyc_analytics:
+ nyc_analytics_acreary:
    +materialized: table
 
    assignment_work:
