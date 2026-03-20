@@ -90,13 +90,6 @@ sources:
           - name: landmark
             description: Nearby landmark or point of interest
 
-sources:
-  - name: raw
-    description: Raw data loaded from NYC Open Data
-    database: ambriappb100
-    schema: nyc_open_restaurants_raw_data
-
-    tables:
       - name: open_restaurants_applications
         description: |
           NYC Open Restaurants Applications dataset.
