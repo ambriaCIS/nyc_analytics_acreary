@@ -89,3 +89,90 @@ sources:
             description: Y coordinate in NY State Plane projection system (NAD 83)
           - name: landmark
             description: Nearby landmark or point of interest
+
+version: 2
+
+sources:
+  - name: raw
+    description: Raw data loaded from NYC Open Data
+    database: ambriappb100
+    schema: nyc_open_restaurants_raw_data
+
+    tables:
+      - name: open_restaurants_applications
+        description: |
+          NYC Open Restaurants Applications dataset.
+          Contains applications submitted by restaurants for outdoor dining programs.
+
+        columns:
+          - name: id
+            description: Unique identifier for each application
+            tests:
+              - unique
+              - not_null
+
+          - name: restaurant_name
+            description: Name of the restaurant
+
+          - name: legal_business_name
+            description: Legal business name of the establishment
+
+          - name: doing_business_as
+            description: DBA name (if different from legal name)
+
+          - name: building_number
+            description: Building number of the restaurant
+
+          - name: street
+            description: Street name of the restaurant
+
+          - name: borough
+            description: NYC borough where the restaurant is located
+
+          - name: zip_code
+            description: Zip code of the restaurant location
+
+          - name: food_service_establishment
+            description: Indicates if the business is a food service establishment
+
+          - name: sidewalk_dimensions_length
+            description: Length of the sidewalk seating area
+
+          - name: sidewalk_dimensions_width
+            description: Width of the sidewalk seating area
+
+          - name: roadway_dimensions_length
+            description: Length of the roadway seating area
+
+          - name: roadway_dimensions_width
+            description: Width of the roadway seating area
+
+          - name: seating_interest_sidewalk
+            description: Indicates interest in sidewalk seating
+
+          - name: seating_interest_roadway
+            description: Indicates interest in roadway seating
+
+          - name: alcohol
+            description: Indicates if alcohol will be served
+
+          - name: sla_serial_number
+            description: State Liquor Authority license number
+
+          - name: sla_license_type
+            description: Type of SLA license
+
+          - name: land_use
+            description: Land use classification
+
+          - name: approved_for_sidewalk_seating
+            description: Approval status for sidewalk seating
+
+          - name: approved_for_roadway_seating
+            description: Approval status for roadway seating
+
+          - name: latitude
+            description: Latitude coordinate
+
+          - name: longitude
+            description: Longitude coordinate
