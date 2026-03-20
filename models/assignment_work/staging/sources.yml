@@ -90,8 +90,6 @@ sources:
           - name: landmark
             description: Nearby landmark or point of interest
 
-version: 2
-
 sources:
   - name: raw
     description: Raw data loaded from NYC Open Data
