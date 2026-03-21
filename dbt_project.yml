@@ -37,8 +37,8 @@ models:
        shared:
          +materialized: table
 
-       open_restaurant_apps:
+       source_nyc_open_restaurant_apps:
          +materialized: table
 
-       dot_311:
+       nyc_hw3_raw_data_source_dot_service_requests_history:
          +materialized: table
