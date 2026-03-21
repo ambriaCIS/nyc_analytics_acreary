@@ -1,31 +1,10 @@
 -- One row per service request
-
 WITH source AS (
    SELECT * FROM {{ source('raw', 'source_nyc_open_restaurant_apps') }}
 ), -- Easier to refer to the dbt reference to a long name table this way
 
 cleaned AS (
     SELECT
-        -- Keep everything except what we transform
-        * EXCEPT (
-            objectid,
-            restaurant_name,
-            legal_business_name,
-            doing_business_as_dba,
-            business_address,
-            borough,
-            zip,
-            bulding_number,
-            street,
-            latitude,
-            longitude,
-            time_of_submission,
-            roadway_dimensions_length,
-            roadway_dimensions_width,
-            sidewalk_dimensions_length,
-            sidewalk_dimensions_width
-        ),
-
         -- Identifier
         CAST(objectid AS STRING) AS restaurant_id,
 
@@ -36,7 +15,7 @@ cleaned AS (
 
         -- Address
         TRIM(CAST(business_address AS STRING)) AS business_address,
-        CAST(bulding_number AS STRING) AS building_number,  -- note: typo in raw column name
+        CAST(bulding_number AS STRING) AS building_number,
         TRIM(CAST(street AS STRING)) AS street,
 
         -- Zip cleaning
@@ -44,7 +23,8 @@ cleaned AS (
             WHEN UPPER(TRIM(zip)) IN ('N/A', 'NA') THEN NULL
             WHEN LENGTH(zip) = 5 THEN zip
             WHEN LENGTH(zip) = 9 THEN zip
-            WHEN LENGTH(zip) = 10 AND REGEXP_CONTAINS(zip, r'^\d{5}-\d{4}') THEN zip
+            WHEN LENGTH(zip) = 10 
+                AND REGEXP_CONTAINS(zip, r'^\d{5}-\d{4}') THEN zip
             ELSE NULL
         END AS zip_code,
 
@@ -72,7 +52,7 @@ cleaned AS (
         CAST(approved_for_roadway_seating AS STRING) AS approved_roadway,
         CAST(qualify_alcohol AS STRING) AS alcohol,
 
-        -- Dimensions (convert from STRING → FLOAT64)
+        -- Dimensions
         CAST(roadway_dimensions_length AS FLOAT64) AS roadway_length,
         CAST(roadway_dimensions_width AS FLOAT64) AS roadway_width,
         CAST(sidewalk_dimensions_length AS FLOAT64) AS sidewalk_length,
@@ -88,7 +68,10 @@ cleaned AS (
       AND borough IS NOT NULL
 
     -- Deduplicate
-    QUALIFY ROW_NUMBER() OVER (PARTITION BY objectid ORDER BY time_of_submission DESC) = 1
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY objectid 
+        ORDER BY time_of_submission DESC
+    ) = 1
 )
 
 SELECT * FROM cleaned
