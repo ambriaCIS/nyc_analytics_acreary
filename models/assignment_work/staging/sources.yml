@@ -5,7 +5,7 @@ sources:
     database: ambriappb100
     schema: nyc_hw3_raw_data 
     tables:
-      - name: source_dot_service_requests_history
+      - name: nyc_hw3_raw_data_source_dot_service_requests_history
         description: |
           NYC 311 service requests for Dept of Transportation.
           One row per service request.
@@ -90,7 +90,7 @@ sources:
           - name: landmark
             description: Nearby landmark or point of interest
 
-      - name: open_restaurants_applications
+      - name: source_nyc_open_restaurant_apps
         description: |
           NYC Open Restaurants Applications dataset.
           Contains applications submitted by restaurants for outdoor dining programs.
