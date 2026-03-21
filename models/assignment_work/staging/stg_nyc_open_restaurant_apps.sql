@@ -1,10 +1,37 @@
 -- One row per service request
+-- dbt run --select stg_nyc_open_restaurant_apps
 WITH source AS (
-   SELECT * FROM {{ source('raw', 'source_nyc_open_restaurant_apps') }}
-), -- Easier to refer to the dbt reference to a long name table this way
+    SELECT *
+    FROM {{ source('raw', 'source_nyc_open_restaurant_apps') }}
+), -- Easier to refer to the dbt reference to a long name table
 
 cleaned AS (
     SELECT
+        -- Get all columns from source, except ones we're transforming below
+        * EXCEPT (
+            objectid,
+            restaurant_name,
+            legal_business_name,
+            doing_business_as_dba,
+            business_address,
+            bulding_number,
+            street,
+            borough,
+            zip,
+            latitude,
+            longitude,
+            time_of_submission,
+            roadway_dimensions_length,
+            roadway_dimensions_width,
+            sidewalk_dimensions_length,
+            sidewalk_dimensions_width,
+            food_service_establishment,
+            seating_interest_sidewalk,
+            approved_for_sidewalk_seating,
+            approved_for_roadway_seating,
+            qualify_alcohol
+        ),
+
         -- Identifier
         CAST(objectid AS STRING) AS restaurant_id,
 
@@ -13,18 +40,18 @@ cleaned AS (
         TRIM(CAST(legal_business_name AS STRING)) AS legal_business_name,
         TRIM(CAST(doing_business_as_dba AS STRING)) AS doing_business_as,
 
-        -- Address
+        -- Address info
         TRIM(CAST(business_address AS STRING)) AS business_address,
         CAST(bulding_number AS STRING) AS building_number,
         TRIM(CAST(street AS STRING)) AS street,
 
-        -- Zip cleaning
+        -- Zip code cleaning
         CASE
-            WHEN UPPER(TRIM(zip)) IN ('N/A', 'NA') THEN NULL
-            WHEN LENGTH(zip) = 5 THEN zip
-            WHEN LENGTH(zip) = 9 THEN zip
-            WHEN LENGTH(zip) = 10 
-                AND REGEXP_CONTAINS(zip, r'^\d{5}-\d{4}') THEN zip
+            WHEN UPPER(TRIM(CAST(zip AS STRING))) IN ('N/A', 'NA') THEN NULL
+            WHEN LENGTH(CAST(zip AS STRING)) = 5 THEN CAST(zip AS STRING)
+            WHEN LENGTH(CAST(zip AS STRING)) = 9 THEN CAST(zip AS STRING)
+            WHEN LENGTH(CAST(zip AS STRING)) = 10
+                 AND REGEXP_CONTAINS(CAST(zip AS STRING), r'^\d{5}-\d{4}') THEN CAST(zip AS STRING)
             ELSE NULL
         END AS zip_code,
 
@@ -42,7 +69,7 @@ cleaned AS (
         CAST(latitude AS FLOAT64) AS latitude,
         CAST(longitude AS FLOAT64) AS longitude,
 
-        -- Time
+        -- Timestamp
         TIMESTAMP(time_of_submission) AS submitted_at,
 
         -- Program info
@@ -58,20 +85,14 @@ cleaned AS (
         CAST(sidewalk_dimensions_length AS FLOAT64) AS sidewalk_length,
         CAST(sidewalk_dimensions_width AS FLOAT64) AS sidewalk_width,
 
-        -- Metadata
         CURRENT_TIMESTAMP() AS _stg_loaded_at
 
     FROM source
-
-    -- Filters
     WHERE objectid IS NOT NULL
       AND borough IS NOT NULL
 
     -- Deduplicate
-    QUALIFY ROW_NUMBER() OVER (
-        PARTITION BY objectid 
-        ORDER BY time_of_submission DESC
-    ) = 1
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY objectid ORDER BY time_of_submission DESC) = 1
 )
 
 SELECT * FROM cleaned
