@@ -4,11 +4,11 @@ WITH seating_types AS (
    SELECT DISTINCT
        seating_interest_sidewalk AS seating_interest,
        CASE 
-           WHEN approved_for_sidewalk_seating = 'Yes' THEN TRUE
+           WHEN approved_sidewalk = 'Yes' THEN TRUE
            ELSE FALSE
        END AS approved_for_sidewalk,
        CASE
-           WHEN approved_for_roadway_seating = 'Yes' THEN TRUE
+           WHEN approved_roadway = 'Yes' THEN TRUE
            ELSE FALSE
        END AS approved_for_roadway
    FROM {{ ref('stg_nyc_open_restaurant_apps') }}
