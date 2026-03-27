@@ -13,7 +13,7 @@ WITH all_locations AS (
    -- Get locations from restaurant applications
    SELECT DISTINCT
        borough,
-       zip AS zip_code
+       zip_code AS zip_code
    FROM {{ ref('stg_nyc_open_restaurant_apps') }}
    WHERE borough IS NOT NULL
 ),
