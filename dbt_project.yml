@@ -42,3 +42,21 @@ models:
 
        nyc_hw3_raw_data_source_dot_service_requests_history:
          +materialized: table
+         
+         project_work:
+     staging:
+       +materialized: table
+       +schema: nyc_transit_restaurants_staging
+
+     marts:
+       +materialized: table
+       +schema: nyc_transit_restaurants_marts
+      
+       shared:
+         +materialized: table
+
+       source_nyc_open_restaurant_apps:
+         +materialized: table
+
+       nyc_hw3_raw_data_source_dot_service_requests_history:
+         +materialized: table
