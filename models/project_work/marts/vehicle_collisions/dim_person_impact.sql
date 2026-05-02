@@ -15,7 +15,7 @@ with impact as (
             else 'No reported injuries or fatalities'
         end as description
 
-    from {{ ref('stg_nyc_service_mvcollision') }}
+    from {{ ref('stg_motor_vehicle_collisions') }}
 
 ),
 
