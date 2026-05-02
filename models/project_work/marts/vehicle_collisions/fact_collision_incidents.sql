@@ -3,7 +3,7 @@
 with collisions as (
 
     select *
-    from {{ ref('stg_nyc_service_mvcollision') }}
+    from {{ ref('stg_motor_vehicle_collisions') }}
 
 ),
 
