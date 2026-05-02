@@ -10,7 +10,7 @@ with dates as (
 
     select distinct
         date(crash_date) as date
-    from {{ ref('stg_nyc_service_mvcollision') }}
+    from {{ ref('stg_motor_vehicle_collisions') }}
 
 ),
 
