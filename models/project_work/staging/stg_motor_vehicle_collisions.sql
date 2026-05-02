@@ -2,7 +2,7 @@
 -- One row per collision event
 
 WITH source AS (
-    SELECT * FROM {{ source('raw', 'source_motor_vehicle_collisions') }}
+{{ source('raw', 'groupnine_finalproj_mvcollisions') }}
 ),
 
 cleaned AS (
