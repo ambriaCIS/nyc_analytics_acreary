@@ -3,9 +3,9 @@ sources:
   - name: raw
     description: Raw data loaded from NYC Open Data
     database: ambriappb100
-    schema: nyc_hw3_raw_data 
+    schema: group_nine_final_proj
     tables:
-      - name: nyc_hw3_raw_data_source_dot_service_requests_history
+      - name: nyc_dot_service_requests_history_copy
         description: |
           NYC 311 service requests for Dept of Transportation.
           One row per service request.
@@ -90,7 +90,7 @@ sources:
           - name: landmark
             description: Nearby landmark or point of interest
 
-      - name: source_nyc_open_restaurant_apps
+      - name: groupnine_finalproj_mvcollisions
         description: |
           NYC Open Restaurants Applications dataset.
           Contains applications submitted by restaurants for outdoor dining programs.
