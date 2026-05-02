@@ -2,7 +2,7 @@
 -- One row per service request
 
 WITH source AS (
-   SELECT * FROM {{ source('raw', 'nyc_hw3_raw_data_source_dot_service_requests_history') }}
+   SELECT * FROM {{ source('raw', 'nyc_dot_service_requests_history_copy') }}
 ), -- Easier to refer to the dbt reference to a long name table this way
 
 cleaned AS (
