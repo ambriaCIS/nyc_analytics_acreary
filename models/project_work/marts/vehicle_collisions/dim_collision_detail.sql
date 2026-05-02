@@ -9,7 +9,7 @@ with collision_details as (
         vehicle_type_code2,
         number_of_persons_injured,
         number_of_persons_killed
-    from {{ ref('stg_nyc_service_mvcollision') }}
+    from {{ ref('stg_motor_vehicle_collisions') }}
 
 ),
 
