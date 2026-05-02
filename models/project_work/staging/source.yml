@@ -2,22 +2,47 @@ version: 2
 
 sources:
   - name: raw
-    description: Raw NYC Open Data
+    description: Raw data loaded from NYC Open Data
     database: ambriappb100
-    schema: nyc_hw3_raw_data 
+    schema: group_nine_final_proj
+
     tables:
-      - name: source_311_service_data
-        description: Raw 311 Service Requests
+      - name: nyc_dot_service_requests_history_copy
+        description: NYC 311 service requests for Dept of Transportation
+
         columns:
           - name: unique_key
             tests:
               - unique
               - not_null
 
-      - name: source_motor_vehicle_collisions
-        description: Raw NYC Motor Vehicle Collisions Data
+      - name: groupnine_finalproj_mvcollisions
+        description: NYC Motor Vehicle Collisions dataset
+
         columns:
           - name: collision_id
             tests:
               - unique
               - not_null
+
+          - name: crash_date
+          - name: crash_time
+          - name: borough
+          - name: zip_code
+          - name: latitude
+          - name: longitude
+          - name: on_street_name
+          - name: off_street_name
+          - name: cross_street_name
+
+          - name: number_of_persons_injured
+          - name: number_of_persons_killed
+          - name: number_of_pedestrians_injured
+          - name: number_of_pedestrians_killed
+          - name: number_of_cyclist_injured
+          - name: number_of_cyclist_killed
+          - name: number_of_motorist_injured
+          - name: number_of_motorist_killed
+
+          - name: contributing_factor_vehicle_1
+          - name: contributing_factor_vehicle_2
