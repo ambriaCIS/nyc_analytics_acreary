@@ -18,7 +18,7 @@ with locations as (
         cast(null as string) as community_board,
         cast(latitude as numeric) as latitude,
         cast(longitude as numeric) as longitude
-    from {{ ref('stg_nyc_service_mvcollision') }}
+    from {{ ref('stg_motor_vehicle_collisions') }}
 
 ),
 
