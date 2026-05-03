@@ -46,10 +46,10 @@ models:
          project_work:
   staging:
     +materialized: table
-    +schema: nyc_311_collisions_staging
+    +schema: group9_staging
   marts:
     +materialized: table
-    +schema: nyc_311_collisions_marts
+    +schema: group9_marts
     conformed:
       +materialized: table
     nyc_dot_service_requests_history_copy:
