@@ -1,11 +1,14 @@
 -- Clean and standardize Motor Vehicle Collisions Data
--- One row per collision event
 
 WITH source AS (
-{{ source('raw', 'groupnine_finalproj_mvcollisions') }}
+
+    SELECT *
+    FROM {{ source('raw', 'groupnine_finalproj_mvcollisions') }}
+
 ),
 
 cleaned AS (
+
     SELECT
         * EXCEPT (
             collision_id,
@@ -36,7 +39,7 @@ cleaned AS (
             ELSE 'UNKNOWN'
         END AS borough,
 
-        -- Location - Clean zip code
+        -- Zip cleanup
         CASE
             WHEN UPPER(TRIM(CAST(zip_code AS STRING))) IN ('N/A', 'NA', 'ANONYMOUS') THEN NULL
             WHEN LENGTH(CAST(zip_code AS STRING)) = 5 THEN CAST(zip_code AS STRING)
@@ -49,7 +52,7 @@ cleaned AS (
         CAST(latitude AS FLOAT64) AS latitude,
         CAST(longitude AS FLOAT64) AS longitude,
 
-        -- Facts / Metrics
+        -- Metrics
         CAST(number_of_persons_injured AS INT64) AS number_of_persons_injured,
         CAST(number_of_persons_killed AS INT64) AS number_of_persons_killed,
 
@@ -58,12 +61,13 @@ cleaned AS (
 
     FROM source
 
-    -- Filters to drop garbage records
     WHERE collision_id IS NOT NULL
       AND crash_date IS NOT NULL
 
-    -- Deduplication
-    QUALIFY ROW_NUMBER() OVER (PARTITION BY collision_id ORDER BY crash_date DESC) = 1
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY collision_id
+        ORDER BY crash_date DESC
+    ) = 1
 )
 
 SELECT * FROM cleaned
