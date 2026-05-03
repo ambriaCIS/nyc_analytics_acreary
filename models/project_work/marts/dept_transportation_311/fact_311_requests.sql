@@ -10,7 +10,7 @@ with requests as (
 final as (
 
     select
-        {{ dbt_utils.generate_surrogate_key(['unique_key']) }} as request_sk,
+        {{ dbt_utils.generate_surrogate_key(['request_id']) }} as request_sk,
 
         dt.time_sk,
         dl.vlocation_sk,
