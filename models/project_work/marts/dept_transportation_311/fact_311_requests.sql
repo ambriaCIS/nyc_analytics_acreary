@@ -28,7 +28,7 @@ final as (
     left join {{ ref('dim_time') }} dt
         on date(r.created_date) = dt.date
 
-    left join {{ ref('dim_location') }} dl
+    left join {{ ref('dim_vlocation') }} dl
         on coalesce(r.borough, '') = coalesce(dl.borough, '')
         and coalesce(cast(r.incident_zip as string), '') = coalesce(dl.zip_code, '')
         and coalesce(cast(r.community_board as string), '') = coalesce(dl.community_board, '')
