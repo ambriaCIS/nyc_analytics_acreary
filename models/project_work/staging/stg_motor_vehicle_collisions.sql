@@ -10,6 +10,17 @@ WITH source AS (
 cleaned AS (
 
     SELECT
+        * EXCEPT (
+            collision_id,
+            crash_date,
+            crash_time,
+            borough,
+            zip_code,
+            latitude,
+            longitude,
+            number_of_persons_injured,
+            number_of_persons_killed
+        ),
 
         -- Identifiers
         CAST(collision_id AS STRING) AS collision_id,
@@ -28,13 +39,12 @@ cleaned AS (
             ELSE 'UNKNOWN'
         END AS borough,
 
-        -- Zip cleanup (NOW SAFE AND EXPLICIT)
+        -- Zip cleanup
         CASE
-            WHEN zip_code IS NULL THEN NULL
             WHEN UPPER(TRIM(CAST(zip_code AS STRING))) IN ('N/A', 'NA', 'ANONYMOUS') THEN NULL
             WHEN LENGTH(CAST(zip_code AS STRING)) = 5 THEN CAST(zip_code AS STRING)
             WHEN LENGTH(CAST(zip_code AS STRING)) = 9 THEN SUBSTR(CAST(zip_code AS STRING), 1, 5)
-            WHEN REGEXP_CONTAINS(CAST(zip_code AS STRING), r'^\d{5}-\d{4}') THEN SUBSTR(CAST(zip_code AS STRING), 1, 5)
+            WHEN LENGTH(CAST(zip_code AS STRING)) = 10 AND REGEXP_CONTAINS(CAST(zip_code AS STRING), r'^\d{5}-\d{4}') THEN SUBSTR(CAST(zip_code AS STRING), 1, 5)
             ELSE NULL
         END AS zip_code,
 

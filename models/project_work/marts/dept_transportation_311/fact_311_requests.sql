@@ -30,7 +30,7 @@ final as (
 
     left join {{ ref('dim_location') }} dl
         on coalesce(r.borough, '') = coalesce(dl.borough, '')
-        and coalesce(cast(r.zip_code as string), '') = coalesce(dl.zip_code, '')
+        and coalesce(cast(r.incident_zip as string), '') = coalesce(dl.zip_code, '')
         and coalesce(cast(r.community_board as string), '') = coalesce(dl.community_board, '')
         and coalesce(cast(r.latitude as string), '') = coalesce(cast(dl.latitude as string), '')
         and coalesce(cast(r.longitude as string), '') = coalesce(cast(dl.longitude as string), '')
