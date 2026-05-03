@@ -13,7 +13,7 @@ final as (
         {{ dbt_utils.generate_surrogate_key(['unique_key']) }} as request_sk,
 
         dt.time_sk,
-        dl.location_sk,
+        dl.vlocation_sk,
         dsr.service_request_sk,
 
         r.created_date as open_dt,
