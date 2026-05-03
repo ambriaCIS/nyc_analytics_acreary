@@ -29,7 +29,7 @@ final as (
     left join {{ ref('dim_time') }} dt
         on date(c.crash_date) = dt.date
 
-    left join {{ ref('dim_location') }} dl
+    left join {{ ref('dim_vlocation') }} dl
         on coalesce(c.borough, '') = coalesce(dl.borough, '')
         and coalesce(cast(c.zip_code as string), '') = coalesce(dl.zip_code, '')
         and dl.community_board is null
