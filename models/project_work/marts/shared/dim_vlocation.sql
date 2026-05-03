@@ -5,7 +5,7 @@ with locations as (
     -- 311 service requests (structured location data)
     select distinct
         borough,
-        cast(zip_code as string) as zip_code,
+        cast(incident_zip as string) as zip_code,
         cast(community_board as string) as community_board,
         cast(latitude as numeric) as latitude,
         cast(longitude as numeric) as longitude
