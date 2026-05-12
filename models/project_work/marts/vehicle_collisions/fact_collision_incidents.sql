@@ -1,56 +1,61 @@
 {{ config(materialized='table') }}
 
-with collisions as (
-
-    select *
-    from {{ ref('stg_motor_vehicle_collisions') }}
-
+WITH collisions AS (
+    SELECT * FROM {{ ref('stg_nyc_service_mvcollision') }}
 ),
 
-final as (
+dim_time AS (
+    SELECT * FROM {{ ref('dim_time') }}
+),
 
-    select
-        c.collision_id as collision_sk,
+dim_location AS (
+    SELECT * FROM {{ ref('dim_vlocation') }}
+),
 
-        dt.time_sk,
-        dl.location_sk,
-        dcd.collision_detail_sk,
-        dpi.person_impact_sk,
+dim_detail AS (
+    SELECT * FROM {{ ref('dim_collision_detail') }}
+),
 
-        c.number_of_persons_injured as persons_injured,
-        c.number_of_persons_killed as persons_killed,
-
-        c.on_street_name,
-
-        c.contributing_factor_vehicle_1 as contributing_factor
-
-    from collisions c
-
-    left join {{ ref('dim_time') }} dt
-        on date(c.crash_date) = dt.date
-
-    left join {{ ref('dim_vlocation') }} dl
-        on coalesce(c.borough, '') = coalesce(dl.borough, '')
-        and coalesce(cast(c.zip_code as string), '') = coalesce(dl.zip_code, '')
-        and dl.community_board is null
-        and coalesce(cast(c.latitude as string), '') = coalesce(cast(dl.latitude as string), '')
-        and coalesce(cast(c.longitude as string), '') = coalesce(cast(dl.longitude as string), '')
-
-    left join {{ ref('dim_collision_detail') }} dcd
-        on coalesce(c.contributing_factor_vehicle_1, '') = coalesce(dcd.contributing_factor_vehicle_1, '')
-        and coalesce(c.contributing_factor_vehicle_2, '') = coalesce(dcd.contributing_factor_vehicle_2, '')
-        and coalesce(c.vehicle_type_code1, '') = coalesce(dcd.vehicle_type_code1, '')
-        and coalesce(c.vehicle_type_code2, '') = coalesce(dcd.vehicle_type_code2, '')
-        and coalesce(c.number_of_persons_injured, 0) = coalesce(dcd.number_of_persons_injured, 0)
-        and coalesce(c.number_of_persons_killed, 0) = coalesce(dcd.number_of_persons_killed, 0)
-
-    left join {{ ref('dim_person_impact') }} dpi
-        on case
-            when c.number_of_persons_killed > 0 then 'Fatal'
-            when c.number_of_persons_injured > 0 then 'Injury'
-            else 'No Injury'
-        end = dpi.severity_level
-
+dim_impact AS (
+    SELECT * FROM {{ ref('dim_person_impact') }}
 )
 
-select * from final
+SELECT
+    -- Fact Table Surrogate Key
+    {{ dbt_utils.generate_surrogate_key(['c.collision_id']) }} AS fact_collision_sk,
+
+    -- Foreign Keys to Dimensions
+    t.time_sk,
+    l.location_sk,
+    d.collision_detail_sk,
+    i.person_impact_sk,
+
+    -- Degenerate Dimensions
+    c.collision_id,
+    c.crash_time,
+    
+    -- Fact Metrics
+    c.number_of_persons_injured AS persons_injured,
+    c.number_of_persons_killed AS persons_killed
+
+FROM collisions c
+
+LEFT JOIN dim_time t
+    ON DATE(c.crash_date) = t.date
+
+LEFT JOIN dim_location l
+    ON coalesce(c.borough, 'UNKNOWN') = coalesce(l.borough, 'UNKNOWN')
+    AND coalesce(c.zip_code, 'UNKNOWN') = coalesce(l.zip_code, 'UNKNOWN')
+
+LEFT JOIN dim_detail d
+    ON coalesce(c.contributing_factor_vehicle_1, 'UNKNOWN') = coalesce(d.contributing_factor_vehicle_1, 'UNKNOWN')
+    AND coalesce(c.contributing_factor_vehicle_2, 'UNKNOWN') = coalesce(d.contributing_factor_vehicle_2, 'UNKNOWN')
+    AND coalesce(c.vehicle_type_code1, 'UNKNOWN') = coalesce(d.vehicle_type_code1, 'UNKNOWN')
+    AND coalesce(c.vehicle_type_code2, 'UNKNOWN') = coalesce(d.vehicle_type_code2, 'UNKNOWN')
+
+LEFT JOIN dim_impact i
+    ON CASE
+        WHEN c.number_of_persons_killed > 0 THEN 'Fatal'
+        WHEN c.number_of_persons_injured > 0 THEN 'Injury'
+        ELSE 'No Injury'
+    END = i.severity_level
