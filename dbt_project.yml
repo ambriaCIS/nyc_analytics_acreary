@@ -26,9 +26,9 @@ models:
    +materialized: table
 
    assignment_work:
-     staging:
-        +schema: staging
-      marts:
+    staging:
+      +schema: staging
+    marts:
         # This targets your models/assignment_work/marts/ folder
         +materialized: table
         +schema: nyc_hw3_raw_data
@@ -41,6 +41,8 @@ models:
 
           nyc_hw3_raw_data_source_dot_service_requests_history:
             +materialized: table
+
+     
 
          
          project_work:
