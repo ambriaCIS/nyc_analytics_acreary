@@ -41,7 +41,7 @@ LEFT JOIN dim_time t
 
 LEFT JOIN dim_location l 
     ON coalesce(s.borough, 'UNKNOWN') = coalesce(l.borough, 'UNKNOWN') 
-    AND coalesce(s.zip_code, 'UNKNOWN') = coalesce(l.zip_code, 'UNKNOWN')
+    AND coalesce(s.incident_zip, 'UNKNOWN') = coalesce(l.zip_code, 'UNKNOWN')
 
 LEFT JOIN dim_service srv 
     ON coalesce(s.complaint_type, 'UNKNOWN') = coalesce(srv.complaint_type, 'UNKNOWN')
