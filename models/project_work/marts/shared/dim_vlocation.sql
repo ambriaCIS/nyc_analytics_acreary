@@ -11,7 +11,7 @@ WITH locations AS (
     SELECT DISTINCT
         coalesce(borough, 'UNKNOWN') AS borough,
         coalesce(zip_code, 'UNKNOWN') AS zip_code
-    FROM {{ ref('stg_nyc_service_mvcollision') }}
+    FROM {{ ref('stg_motor_vehicle_collisions') }}
 )
 
 SELECT
