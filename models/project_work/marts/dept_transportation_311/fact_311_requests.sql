@@ -26,7 +26,7 @@ SELECT
     srv.service_request_sk,
 
     -- Degenerate Dimensions
-    s.unique_key,
+    s.request_id,
     s.status,
     s.latitude,
     s.longitude,
