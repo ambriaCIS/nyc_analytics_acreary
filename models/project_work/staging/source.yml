@@ -22,6 +22,7 @@ sources:
         columns:
           - name: collision_id
             tests:
+              - unique
               - not_null
 
           - name: crash_date
