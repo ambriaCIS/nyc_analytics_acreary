@@ -6,7 +6,7 @@ WITH collision_details AS (
         coalesce(contributing_factor_vehicle_2, 'UNKNOWN') AS contributing_factor_vehicle_2,
         coalesce(vehicle_type_code1, 'UNKNOWN') AS vehicle_type_code1,
         coalesce(vehicle_type_code2, 'UNKNOWN') AS vehicle_type_code2
-    FROM {{ ref('stg_nyc_service_mvcollision') }}
+    FROM {{ ref('stg_motor_vehicle_collisions') }}
 )
 
 SELECT
