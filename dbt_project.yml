@@ -44,15 +44,20 @@ models:
          +materialized: table
          
          project_work:
-  staging:
-    +materialized: table
-    +schema: group9_staging
-  marts:
-    +materialized: table
-    +schema: group9_marts
-    conformed:
-      +materialized: table
-    nyc_dot_service_requests_history_copy:
-      +materialized: table
-    groupnine_finalproj_mvcollisions:
-      +materialized: table
+     staging:
+       +materialized: table
+       +schema: group9project_staging
+
+     marts:
+       +materialized: table
+       +schema: group9project_warehouse
+      
+       conformed:
+         +materialized: table
+
+       groupnine_finalproj_mvcollisions:
+         +materialized: table
+
+       nyc_dot_service_requests_history_copy:
+         +materialized: table
+   
