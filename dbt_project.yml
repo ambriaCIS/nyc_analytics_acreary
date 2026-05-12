@@ -22,44 +22,41 @@ clean-targets:
 
 # Set up models, which are basically SQL files, to create tables
 models:
- nyc_analytics_acreary:
-   +materialized: table
+  nyc_analytics_acreary:
 
-   assignment_work:
-    staging:
-      +schema: staging
-    marts:
-        # This targets your models/assignment_work/marts/ folder
+    assignment_work:
+
+      staging:
+        +schema: staging
+
+      marts:
         +materialized: table
         +schema: nyc_hw3_raw_data
 
-        shared: 
-          +materialized: table
+      shared:
+        +materialized: table
 
-          source_nyc_open_restaurant_apps:
-            +materialized: table
+      source_nyc_open_restaurant_apps:
+        +materialized: table
 
-          nyc_hw3_raw_data_source_dot_service_requests_history:
-            +materialized: table
+      nyc_hw3_raw_data_source_dot_service_requests_history:
+        +materialized: table
 
-     
+    project_work:
 
-         
-         project_work:
-     staging:
-       +materialized: table
-       +schema: group9project_staging
+      staging:
+        +materialized: table
+        +schema: group9project_staging
 
-     marts:
-       +materialized: table
-       +schema: group9project_warehouse
-      
-       conformed:
-         +materialized: table
+      marts:
+        +materialized: table
+        +schema: group9project_warehouse
 
-       groupnine_finalproj_mvcollisions:
-         +materialized: table
+      conformed:
+        +materialized: table
 
-       nyc_dot_service_requests_history_copy:
-         +materialized: table
-   
+      groupnine_finalproj_mvcollisions:
+        +materialized: table
+
+      nyc_dot_service_requests_history_copy:
+        +materialized: table
