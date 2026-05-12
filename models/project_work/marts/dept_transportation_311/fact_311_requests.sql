@@ -1,46 +1,49 @@
 {{ config(materialized='table') }}
 
-with requests as (
-
-    select *
-    from {{ ref('stg_nyc_311_service_request_history') }}
-
+WITH stg_311 AS (
+    SELECT * FROM {{ ref('stg_nyc_311_service_request_history') }}
 ),
 
-final as (
+dim_time AS (
+    SELECT * FROM {{ ref('dim_time') }}
+),
 
-    select
-        {{ dbt_utils.generate_surrogate_key(['request_id']) }} as request_sk,
+dim_location AS (
+    SELECT * FROM {{ ref('dim_vlocation') }}
+),
 
-        dt.time_sk,
-        dl.location_sk,
-        dsr.service_request_sk,
-
-        r.created_date as open_dt,
-        r.closed_date as closed_dt,
-
-        timestamp_diff(r.closed_date, r.created_date, hour) as response_time,
-
-        r.status
-
-    from requests r
-
-    left join {{ ref('dim_time') }} dt
-        on date(r.created_date) = dt.date
-
-    left join {{ ref('dim_vlocation') }} dl
-        on coalesce(r.borough, '') = coalesce(dl.borough, '')
-        and coalesce(cast(r.incident_zip as string), '') = coalesce(dl.zip_code, '')
-        and coalesce(cast(r.community_board as string), '') = coalesce(dl.community_board, '')
-        and coalesce(cast(r.latitude as string), '') = coalesce(cast(dl.latitude as string), '')
-        and coalesce(cast(r.longitude as string), '') = coalesce(cast(dl.longitude as string), '')
-
-    left join {{ ref('dim_service_request') }} dsr
-        on coalesce(r.complaint_type, '') = coalesce(dsr.complaint_type, '')
-        and coalesce(r.descriptor, '') = coalesce(dsr.descriptor, '')
-        and coalesce(r.agency, '') = coalesce(dsr.agency, '')
-        and coalesce(r.resolution_description, '') = coalesce(dsr.resolution_description, '')
-
+dim_service AS (
+    SELECT * FROM {{ ref('dim_service_request') }}
 )
 
-select * from final
+SELECT
+    -- Fact Table Surrogate Key
+    {{ dbt_utils.generate_surrogate_key(['s.unique_key']) }} AS fact_311_sk,
+
+    -- Foreign Keys to Dimensions
+    t.time_sk,
+    l.location_sk,
+    srv.service_request_sk,
+
+    -- Degenerate Dimensions
+    s.unique_key,
+    s.status,
+    s.latitude,
+    s.longitude,
+
+    -- Fact Metrics
+    1 AS request_count
+
+FROM stg_311 s
+
+LEFT JOIN dim_time t 
+    ON DATE(s.created_date) = t.date
+
+LEFT JOIN dim_location l 
+    ON coalesce(s.borough, 'UNKNOWN') = coalesce(l.borough, 'UNKNOWN') 
+    AND coalesce(s.zip_code, 'UNKNOWN') = coalesce(l.zip_code, 'UNKNOWN')
+
+LEFT JOIN dim_service srv 
+    ON coalesce(s.complaint_type, 'UNKNOWN') = coalesce(srv.complaint_type, 'UNKNOWN')
+    AND coalesce(s.agency, 'UNKNOWN') = coalesce(srv.agency, 'UNKNOWN')
+    AND coalesce(s.agency_name, 'UNKNOWN') = coalesce(srv.agency_name, 'UNKNOWN')
