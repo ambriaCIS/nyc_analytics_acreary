@@ -18,7 +18,7 @@ dim_service AS (
 
 SELECT
     -- Fact Table Surrogate Key
-    {{ dbt_utils.generate_surrogate_key(['s.unique_key']) }} AS fact_311_sk,
+    {{ dbt_utils.generate_surrogate_key(['s.request_id']) }} AS fact_311_sk,
 
     -- Foreign Keys to Dimensions
     t.time_sk,
