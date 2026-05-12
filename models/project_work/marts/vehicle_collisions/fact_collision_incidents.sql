@@ -1,7 +1,7 @@
 {{ config(materialized='table') }}
 
 WITH collisions AS (
-    SELECT * FROM {{ ref('stg_nyc_service_mvcollision') }}
+    SELECT * FROM {{ ref('stg_motor_vehicle_collisions') }}
 ),
 
 dim_time AS (
