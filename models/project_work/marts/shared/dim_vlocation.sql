@@ -17,5 +17,5 @@ WITH locations AS (
 SELECT
     {{ dbt_utils.generate_surrogate_key(['borough','zip_code']) }} AS location_sk,
     borough,
-    zip_code
+    incident_zip
 FROM locations
